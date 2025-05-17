@@ -672,7 +672,7 @@ async def clone_or_update_repository(
     """
     repo_path: str = f"/home/{RESTRICTED_USER}/tensorprox"
     repo_url: str = "https://github.com/phamlamuet/tensorprox.git"
-    branch: str = "main"
+    branch: str = "master"
     sparse_folder: str = "tensorprox/core/immutable"
 
 
