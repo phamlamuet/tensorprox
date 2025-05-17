@@ -27,20 +27,19 @@ from datetime import datetime
 from enum import Enum, auto
 from multiprocessing import Event, Process, cpu_count
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
-
+import logging
 # Third-party imports
 from faker import Faker
 from scapy.all import IP, TCP, UDP, Raw, send
 from Crypto.Cipher import AES
 
 # Configure logging
-log_file = "/var/log/script_execution.log"
 logging.basicConfig(
-    filename=log_file,
     level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
 )
-
+logger = logging.getLogger(__name__)
 
 class TrafficType(Enum):
     """Enumeration of traffic types supported by the framework."""
