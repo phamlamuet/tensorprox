@@ -299,7 +299,7 @@ class Miner(BaseMinerNeuron):
     async def process_packet_stream(self, packet_data, destination_ip, iface):
         """
         Store packet and its protocol in the corresponding buffer for the given interface.
-        
+
         Args:
             packet_data (bytes): The network packet data to store.
             destination_ip (str): The expected destination IP.
@@ -316,11 +316,15 @@ class Miner(BaseMinerNeuron):
         if protocol not in (6, 17):
             return  # Ignore non-TCP and non-UDP packets
 
-        # Convert the destination IP from binary to string format
+        # Convert the source and destination IP from binary to string format
+        src_ip = socket.inet_ntoa(iph[8])
         dest_ip = socket.inet_ntoa(iph[9])
 
+        protocol_name = "TCP" if protocol == 6 else "UDP"
+        logger.info(f"📦 [{iface}] {protocol_name} packet from {src_ip} to {dest_ip}")
+
         # Filter: Only process packets where the destination IP matches king_overlay_ip
-        if dest_ip != destination_ip :
+        if dest_ip != destination_ip:
             return  # Ignore packets not originating from king_overlay_ip
 
         async with self._lock:
@@ -646,7 +650,7 @@ async def clone_or_update_repository(
     username: str,
     initial_private_key_path: str = INITIAL_PK_PATH,
     repo_path: str = f"/home/{RESTRICTED_USER}/tensorprox",
-    repo_url: str = "https://github.com/shugo-labs/tensorprox.git",
+    repo_url: str = "https://github.com/phamlamuet/tensorprox.git",
     branch: str = "main",
     sparse_folder: str = "tensorprox/core/immutable",
     timeout: int = 5,
@@ -666,6 +670,12 @@ async def clone_or_update_repository(
         timeout (int, optional): Timeout in seconds for the SSH connection. Defaults to 5.
         retries (int, optional): Number of retry attempts in case of failure. Defaults to 3.
     """
+    repo_path: str = f"/home/{RESTRICTED_USER}/tensorprox"
+    repo_url: str = "https://github.com/phamlamuet/tensorprox.git"
+    branch: str = "main"
+    sparse_folder: str = "tensorprox/core/immutable"
+
+
     for attempt in range(retries):
         try:
             logger.info(f"Attempting SSH connection to {machine_ip} with user {username} (Attempt {attempt + 1}/{retries})...")
